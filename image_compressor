@@ -1,11 +1,39 @@
 #!/bin/bash
-# echo $0
 
-filename="${1%%.*}"
 outputpath="./compressed"
 thumbpath="./thumbnails"
 
-echo "Converting ${1} to ${filename}.jpeg"
-magick convert $1 -auto-orient -strip -quality 75 "$outputpath/${filename}.jpeg"
-magick convert $1 -auto-orient -strip -thumbnail 400 "$thumbpath/${filename}.jpeg"
+# Create directories
+if [ ! -d $outputpath ]; then
+    mkdir $outputpath
+fi
+if [ ! -d $thumbpath ]; then
+    mkdir $thumbpath
+fi
 
+# Check arguements are supplied and file exists
+if [ $# -eq 0 ]; then
+    echo "No arguments supplied"
+    exit 1
+fi
+
+if ! [ -f "$1" ]; then
+    echo "$1 does not exist"
+    exit 1
+fi
+
+command -v magick >/dev/null 2>&1 || {
+    echo >&2 "ImageMagick7 required  Aborting."
+    exit 1
+}
+
+# Convert an image to jpeg for web and create a thumbnail
+
+# Strip extensions out of the filename
+filename="${1%%.*}"
+
+echo "Converting ${1} to ${filename}.jpeg"
+
+magick convert "$1" -auto-orient -strip -quality 75 "$outputpath/${filename}.jpeg"
+
+magick convert "$1" -auto-orient -strip -thumbnail 400 "$thumbpath/${filename}.jpeg"

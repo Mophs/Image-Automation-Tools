@@ -1,0 +1,11 @@
+#!/bin/bash
+# echo $0
+
+filename="${1%%.*}"
+outputpath="./compressed"
+thumbpath="./thumbnails"
+
+echo "Converting ${1} to ${filename}.jpeg"
+magick convert $1 -auto-orient -strip -quality 75 "$outputpath/${filename}.jpeg"
+magick convert $1 -auto-orient -strip -thumbnail 400 "$thumbpath/${filename}.jpeg"
+
